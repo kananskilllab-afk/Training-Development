@@ -115,10 +115,25 @@
             .floating-sidebar,
             #settingsModal,
             .settings-trigger,
-            .indicator-box,
             .score-adjust-btn,
             .top-nav {
                 display: none !important;
+            }
+
+            /* Enable exact background color and border rendering on print */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Clean checklist formatting for print */
+            .indicator-box {
+                display: block !important;
+                background: #f8fafc !important;
+                border-left: 3px solid #1e3a8a !important;
+                padding: 6px 10px !important;
+                margin-bottom: 10px !important;
+                border-radius: 0 4px 4px 0 !important;
             }
 
             /* Full-width layout */
