@@ -1623,7 +1623,13 @@
             Overall Classification Tier: ${tier}
             Development Track Action: ${rec}
 
-            Provide exactly three fields in your response, each structured as a bulleted list of 5-7 concise, warm, constructive, human-friendly professional points. Ensure some points refer to the employee by name (${empName}) naturally. Prefix each bullet point with "• " and separate them with newlines (\\n). Do not include bold headers or markdown formatting inside the JSON fields.
+            CRITICAL TONE DIRECTIVE:
+            You must match your tone to the candidate's actual score. 
+            - For critical or very low scores (especially 0 to 40 out of 100), do NOT write generic praise or flattering remarks ("buttering"). Be polite, professional, and constructly honest. Call out the deficiencies directly using clear, objective professional language.
+            - For mid scores (41 to 75 out of 100), be balanced. Highlight specific areas that were completed successfully, while detailing the developmental gaps without sugarcoating.
+            - For high scores (76+ out of 100), you may write encouraging and commendatory remarks.
+
+            Provide exactly three fields in your response, each structured as a bulleted list of 5-7 concise, professional points. Ensure points refer to the employee by name (${empName}) naturally. Prefix each bullet point with "• " and separate them with newlines (\\n). Do not include bold headers or markdown formatting inside the JSON fields.
             Output your response strictly as a JSON object matching this schema exactly:
             {
                "strengths": "• First strength bullet point mentioning ${empName}\\n• Second strength...\\n• Third...\\n• Fourth...\\n• Fifth...",
