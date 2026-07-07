@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Talent Evaluation Portal - Kanan International</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            50: '#f4f6fa',
+                            100: '#e5e9f2',
+                            500: '#1e3a8a',
+                            800: '#0f172a',
+                            900: '#0a2540',
+                        },
+                        gold: {
+                            500: '#d4af37',
+                            600: '#c5a880',
+                            700: '#b45309',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        title: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Custom Style Rules for Fine-Tuned Enhancements & Printing -->
+    <style>
+        /* Modern Glassmorphic Dashboard Styling */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        
+        .floating-sidebar {
+            position: sticky;
+            top: 2rem;
+            max-height: calc(100vh - 4rem);
+        }
+
+        /* Hide default number input spinners */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        /* Checkbox slider styling */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #1e3a8a;
+            background-color: #1e3a8a;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #1e3a8a;
+        }
+
+        /* Executive Watermark for Screen (Subtle) */
+        .watermark-container {
+            position: relative;
+        }
+        .watermark-container::after {
+            content: "CONFIDENTIAL";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 8rem;
+            font-weight: 800;
+            color: rgba(15, 23, 42, 0.025);
+            pointer-events: none;
+            z-index: 0;
+            letter-spacing: 0.5rem;
+        }
+
+        /* PRINT STYLES - Professional Letterhead PDF */
+        @media print {
+            /* A4 page — comfortable margins so nothing clips */
+            @page {
+                size: A4 portrait;
+                margin: 12mm 14mm 12mm 14mm;
+            }
+
+            html, body {
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                background: white !important;
+                color: #0f172a !important;
+                font-size: 8.5pt !important;
+                line-height: 1.3 !important;
+                width: 100% !important;
+            }
+
+            /* Hide all non-printable screen UI */
+            .no-print,
+            button,
+            .floating-sidebar,
+            #settingsModal,
+            .settings-trigger,
+            .indicator-box,
+            .score-adjust-btn,
+            .top-nav {
+                display: none !important;
+            }
+
+            /* Full-width layout */
+            .main-content-container {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                background: transparent !important;
+            }
+
+            /* Clean card styling */
+            .glass-card {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin-bottom: 10px !important;
+            }
+
+            h2 {
+                font-size: 10.5pt !important;
+                margin-top: 10px !important;
+                margin-bottom: 4px !important;
+            }
+
+            h3 {
+                font-size: 9pt !important;
+                margin-top: 7px !important;
+                margin-bottom: 3px !important;
+            }
+
+            .score-row {
+                padding: 3px 0 !important;
+                margin-bottom: 2px !important;
+                border-bottom: 1px dashed #cbd5e1 !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                flex-wrap: nowrap !important;
+            }
+
+            .profile-grid {
+                gap: 8px !important;
+            }
+
+            .form-group {
+                margin-bottom: 5px !important;
+            }
+
+            input, select {
+                border: none !important;
+                background: transparent !important;
+                padding: 2px 0 !important;
+                font-weight: 600 !important;
+                color: #0f172a !important;
+                outline: none !important;
+                box-shadow: none !important;
+                font-size: 8.5pt !important;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                max-width: 100% !important;
+                overflow: visible !important;
+            }
+
+            /* Underlined profile fields */
+            .profile-grid input {
+                border-bottom: 1px solid #cbd5e1 !important;
+                width: 100% !important;
+            }
+
+            /* Hide screen textareas — replaced by JS-synced divs */
+            textarea {
+                display: none !important;
+            }
+
+            /* AI commentary print divs */
+            .print-commentary {
+                display: block !important;
+                white-space: pre-wrap !important;
+                font-size: 8.5pt !important;
+                line-height: 1.5 !important;
+                border: 1px solid #cbd5e1 !important;
+                padding: 8px 10px !important;
+                border-radius: 4px !important;
+                margin-top: 4px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                overflow: visible !important;
+                min-height: 10px !important;
+                height: auto !important;
+            }
+
+            /* Print-only Letterhead Header */
+            .print-header {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                border-bottom: 3px double #1e3a8a !important;
+                padding-bottom: 10px !important;
+                margin-bottom: 18px !important;
+            }
+
+            .print-logo-container img {
+                height: 44px !important;
+                display: block !important;
+            }
+
+            .print-header-details {
+                text-align: right !important;
+                font-size: 8pt !important;
+                color: #475569 !important;
+            }
+
+            /* Print-only watermark */
+            .print-watermark {
+                display: block !important;
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) rotate(-35deg) !important;
+                font-size: 5.5rem !important;
+                font-weight: 900 !important;
+                color: rgba(15, 23, 42, 0.03) !important;
+                z-index: -1000 !important;
+                pointer-events: none !important;
+                letter-spacing: 0.6rem !important;
+            }
+
+            /* Prevent ugly mid-element page breaks */
+            h2, h3, .score-row, .dashboard-table, .signature-row, .form-group {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            /* Explicit page break marker */
+            .print-page-break {
+                page-break-before: always !important;
+                break-before: always !important;
+            }
+
+            /* Print table */
+            .dashboard-table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                table-layout: fixed !important;
+            }
+            .dashboard-table th, .dashboard-table td {
+                border: 1px solid #cbd5e1 !important;
+                padding: 5px 8px !important;
+                overflow: hidden !important;
+                word-break: break-word !important;
+            }
+            .dashboard-table th {
+                background-color: #f1f5f9 !important;
+                font-size: 8pt !important;
+            }
+
+            /* Checkboxes */
+            .checkbox-grid {
+                display: block !important;
+                margin-top: 4px !important;
+            }
+            .checkbox-item {
+                display: inline-block !important;
+                margin-right: 12px !important;
+                font-size: 7.5pt !important;
+            }
+            .checkbox-item input {
+                display: inline !important;
+                margin-right: 3px !important;
+            }
+
+            .score-value-display {
+                font-weight: bold !important;
+                color: #1e3a8a !important;
+                text-align: right !important;
+            }
+
+            /* Signature block */
+            .signature-row table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+        }
+
+        /* Screen-only defaults */
+        .print-header {
+            display: none;
+        }
+        .print-watermark {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <!-- Screen Navigation Header -->
+    <header class="top-nav bg-navy-900 text-white py-4 px-6 shadow-md border-b-2 border-gold-500 no-print">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="bg-white p-2 rounded shadow-inner">
+                    <img id="screenLogo" src="kanan-logo.png" alt="Kanan International" class="h-10 object-contain" onerror="showFallbackLogo(this)">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold font-title tracking-wide">STRATEGIC TALENT ASSESSMENT</h1>
+                    <p class="text-xs text-slate-300">Internal Demo Evaluation Framework</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button type="button" onclick="openSettings()" class="bg-navy-800 hover:bg-navy-500 border border-slate-700 text-slate-200 px-3 py-1.5 rounded flex items-center space-x-2 text-sm transition shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="h-4 w-4 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>Gemini API Key</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 py-8 lg:py-12">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+            
+            <!-- LEFT COLUMN: Main Form Evaluation Content (Col span 8) -->
+            <main class="lg:col-span-8 space-y-8 main-content-container relative">
+                              <!-- Print-Only Letterhead Header -->
+                 <div class="print-header">
+                     <div class="print-logo-container">
+                         <img src="kanan-logo.png" alt="Kanan International Logo" onerror="showFallbackLogo(this)">
+                     </div>
+                    <div class="print-header-details">
+                        <div class="font-bold text-navy-900 text-base">Learning and Development Department</div>
+                        <div>Email: training@kananinternational.in | Web: www.kanan.co</div>
+                    </div>
+                </div>
+
+                <!-- Print-Only Watermark -->
+                <div class="print-watermark">CONFIDENTIAL ASSESSMENT</div>
+
+                <!-- Section 1: Profile Information -->
+                <section class="glass-card rounded-2xl p-6 lg:p-8 shadow-sm">
+                    <div class="flex items-center space-x-3 border-b border-slate-100 pb-4 mb-6">
+                        <div class="h-8 w-2 bg-navy-500 rounded-full"></div>
+                        <h2 class="text-xl font-bold font-title text-navy-900">1. Candidate & Assessment Profile</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 profile-grid">
+                        <div class="form-group">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Employee Name</label>
+                            <input type="text" id="empName" placeholder="Enter Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 focus:bg-white focus:ring-2 focus:ring-navy-500 focus:border-navy-500 transition outline-none font-medium">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Reporting Manager</label>
+                            <input type="text" id="manager" placeholder="Enter Manager Name" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 focus:bg-white focus:ring-2 focus:ring-navy-500 focus:border-navy-500 transition outline-none font-medium">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Department</label>
+                            <input type="text" id="dept" placeholder="e.g. Sales, Counselling" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 focus:bg-white focus:ring-2 focus:ring-navy-500 focus:border-navy-500 transition outline-none font-medium">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Evaluator Name</label>
+                            <input type="text" id="evaluator" placeholder="Enter Evaluator Name" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 focus:bg-white focus:ring-2 focus:ring-navy-500 focus:border-navy-500 transition outline-none font-medium">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Demo Topic</label>
+                            <input type="text" id="topic" placeholder="e.g. IELTS Writing Task 2, Visa Filing Process" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 focus:bg-white focus:ring-2 focus:ring-navy-500 focus:border-navy-500 transition outline-none font-medium">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Demo Date</label>
+                            <input type="date" id="demoDate" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 focus:bg-white focus:ring-2 focus:ring-navy-500 focus:border-navy-500 transition outline-none font-medium">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Leadership Performance Dashboard (Hidden elements styled beautifully for print) -->
+                <section class="glass-card rounded-2xl p-6 lg:p-8 shadow-sm watermark-container">
+                    <div class="flex items-center space-x-3 border-b border-slate-100 pb-4 mb-6">
+                        <div class="h-8 w-2 bg-navy-500 rounded-full"></div>
+                        <h2 class="text-xl font-bold font-title text-navy-900">2. Performance Evaluation Dashboard</h2>
+                    </div>
+
+                    <!-- Tally Table -->
+                    <div class="overflow-x-auto">
+                        <table class="dashboard-table min-w-full divide-y divide-slate-200">
+                            <thead>
+                                <tr class="bg-slate-50">
+                                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-navy-900 border border-slate-200">KPI Competency Category</th>
+                                    <th scope="col" class="px-6 py-3.5 text-center text-xs font-bold uppercase tracking-wider text-navy-900 border border-slate-200 w-32">Weight</th>
+                                    <th scope="col" class="px-6 py-3.5 text-center text-xs font-bold uppercase tracking-wider text-navy-900 border border-slate-200 w-36">Actual Score</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-100">
+                                <tr>
+                                    <td class="px-6 py-3.5 text-sm font-semibold text-slate-700 border border-slate-200">1. Technical Competency</td>
+                                    <td class="px-6 py-3.5 text-center text-sm font-bold text-slate-400 border border-slate-200">25</td>
+                                    <td class="px-6 py-3.5 text-center border border-slate-200">
+                                        <input type="text" id="dashTech" value="0 / 25" readonly class="text-center font-bold text-navy-900 w-full">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-3.5 text-sm font-semibold text-slate-700 border border-slate-200">2. Communication Excellence</td>
+                                    <td class="px-6 py-3.5 text-center text-sm font-bold text-slate-400 border border-slate-200">20</td>
+                                    <td class="px-6 py-3.5 text-center border border-slate-200">
+                                        <input type="text" id="dashComm" value="0 / 20" readonly class="text-center font-bold text-navy-900 w-full">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-3.5 text-sm font-semibold text-slate-700 border border-slate-200">3. Presentation Impact</td>
+                                    <td class="px-6 py-3.5 text-center text-sm font-bold text-slate-400 border border-slate-200">20</td>
+                                    <td class="px-6 py-3.5 text-center border border-slate-200">
+                                        <input type="text" id="dashPres" value="0 / 20" readonly class="text-center font-bold text-navy-900 w-full">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-3.5 text-sm font-semibold text-slate-700 border border-slate-200">4. Analytical Ability</td>
+                                    <td class="px-6 py-3.5 text-center text-sm font-bold text-slate-400 border border-slate-200">15</td>
+                                    <td class="px-6 py-3.5 text-center border border-slate-200">
+                                        <input type="text" id="dashAnal" value="0 / 15" readonly class="text-center font-bold text-navy-900 w-full">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-3.5 text-sm font-semibold text-slate-700 border border-slate-200">5. Professional Behaviour</td>
+                                    <td class="px-6 py-3.5 text-center text-sm font-bold text-slate-400 border border-slate-200">10</td>
+                                    <td class="px-6 py-3.5 text-center border border-slate-200">
+                                        <input type="text" id="dashProf" value="0 / 10" readonly class="text-center font-bold text-navy-900 w-full">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-3.5 text-sm font-semibold text-slate-700 border border-slate-200">6. Innovation & Initiative</td>
+                                    <td class="px-6 py-3.5 text-center text-sm font-bold text-slate-400 border border-slate-200">10</td>
+                                    <td class="px-6 py-3.5 text-center border border-slate-200">
+                                        <input type="text" id="dashInno" value="0 / 10" readonly class="text-center font-bold text-navy-900 w-full">
+                                    </td>
+                                </tr>
+                                <tr class="bg-navy-50 font-bold" id="totalScoreRow">
+                                    <td class="px-6 py-4 text-sm uppercase tracking-wide text-navy-900 border border-slate-200">Total Metric Index Score</td>
+                                    <td class="px-6 py-4 text-center text-navy-900 border border-slate-200">100</td>
+                                    <td class="px-6 py-4 text-center border border-slate-200 bg-navy-100">
+                                        <input type="text" id="dashGrand" value="0 / 100" readonly class="text-center font-extrabold text-lg text-navy-900 w-full">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tier and Recommendation Display -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Calculated Classification Tier</span>
+                            <div class="flex items-center space-x-3">
+                                <span id="tierBadge" class="px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-200 text-slate-600">Pending Score</span>
+                                <input type="text" id="dashboardTier" value="Pending Calculation" readonly class="font-bold text-navy-900 flex-1 bg-transparent">
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Strategic Development Track Action</span>
+                            <div class="flex items-center space-x-3">
+                                <span id="recBadge" class="px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-200 text-slate-600">Pending Score</span>
+                                <input type="text" id="dashboardRec" value="Pending Calculation" readonly class="font-bold text-navy-900 flex-1 bg-transparent">
+                            </div>
+                        </div>
+                        <!-- Re-evaluation Switch -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center justify-between col-span-1 md:col-span-2 no-print">
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-navy-900 block mb-0.5">Require Re-evaluation (Scores &lt; 60)</span>
+                                <span class="text-[11px] text-slate-400">By default, scores &lt; 60 recommend "Retraining". Toggle this on to recommend "Re-evaluation Required".</span>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer select-none">
+                                <input type="checkbox" id="requireReeval" class="sr-only peer" onchange="calculateScores()">
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-navy-500"></div>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 3: 100-Point Weighted Competency Framework -->
+                <section class="space-y-6">
+                    <div class="flex items-center space-x-3 border-b border-slate-200 pb-3">
+                        <div class="h-8 w-2 bg-navy-500 rounded-full"></div>
+                        <h2 class="text-xl font-bold font-title text-navy-900">3. Weighted Assessment Matrices</h2>
+                    </div>
+
+                    <!-- MATRIX 1: Technical Competency -->
+                    <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-5">
+                            <div>
+                                <h3 class="text-base font-bold text-navy-900">1. Technical Competency</h3>
+                                <p class="text-xs text-slate-400">Underlying domain principles, workflow and application</p>
+                            </div>
+                            <span class="px-3 py-1 bg-navy-50 text-navy-900 text-xs font-bold uppercase rounded-lg">Weight: 25</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Product Knowledge</h4>
+                                    <p class="text-xs text-slate-400">Deep comprehension of overall product or service feature scope.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 5</span>
+                                    <input type="number" min="0" max="5" value="0" class="tech-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Conceptual Clarity</h4>
+                                    <p class="text-xs text-slate-400">Fundamental technical concepts are accurately and fluidly explained.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 5</span>
+                                    <input type="number" min="0" max="5" value="0" class="tech-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Process Understanding</h4>
+                                    <p class="text-xs text-slate-400">Operational structures, regulations, and execution workflows.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 5</span>
+                                    <input type="number" min="0" max="5" value="0" class="tech-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Accuracy</h4>
+                                    <p class="text-xs text-slate-400">Error-free execution, avoiding factual mistakes and false assurances.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 5</span>
+                                    <input type="number" min="0" max="5" value="0" class="tech-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Practical Application</h4>
+                                    <p class="text-xs text-slate-400">Ability to map parameters onto custom real-world case simulations.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 5</span>
+                                    <input type="number" min="0" max="5" value="0" class="tech-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MATRIX 2: Communication Excellence -->
+                    <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-5">
+                            <div>
+                                <h3 class="text-base font-bold text-navy-900">2. Communication Excellence</h3>
+                                <p class="text-xs text-slate-400">Tone, grammar, delivery pacing, and active dialogue management</p>
+                            </div>
+                            <span class="px-3 py-1 bg-navy-50 text-navy-900 text-xs font-bold uppercase rounded-lg">Weight: 20</span>
+                        </div>
+
+                        <!-- Baseline checklist -->
+                        <div class="indicator-box bg-slate-50 border-l-4 border-navy-500 rounded-r-xl p-4 mb-6">
+                            <span class="text-xs font-bold uppercase tracking-wider text-navy-900 block mb-3">Communication Baseline Checkpoints:</span>
+                            <div class="checkbox-grid grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Professional Language</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Proper Pace</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Active Listening</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Confident Responses</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Minimal Filler Words</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Voice Clarity</h4>
+                                    <p class="text-xs text-slate-400">Audibility, tone modulation, appropriate pronunciation and projection.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 4</span>
+                                    <input type="number" min="0" max="4" value="0" class="comm-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Grammar & Vocabulary</h4>
+                                    <p class="text-xs text-slate-400">Structured phrasing, formal corporate phrasing, and vocabulary precision.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 4</span>
+                                    <input type="number" min="0" max="4" value="0" class="comm-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Confidence</h4>
+                                    <p class="text-xs text-slate-400">Steady voice stream, minimal hesitations, presence under questioning.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 4</span>
+                                    <input type="number" min="0" max="4" value="0" class="comm-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Engagement</h4>
+                                    <p class="text-xs text-slate-400">Empathetic tone, responsive style, keeping the audience locked in.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 4</span>
+                                    <input type="number" min="0" max="4" value="0" class="comm-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Listening Skills</h4>
+                                    <p class="text-xs text-slate-400">Wait-to-speak discipline, understanding verbal prompts and intent.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 4</span>
+                                    <input type="number" min="0" max="4" value="0" class="comm-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MATRIX 3: Presentation Impact -->
+                    <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-5">
+                            <div>
+                                <h3 class="text-base font-bold text-navy-900">3. Presentation Impact</h3>
+                                <p class="text-xs text-slate-400">Logical structures, visual aesthetics, body posture, pacing</p>
+                            </div>
+                            <span class="px-3 py-1 bg-navy-50 text-navy-900 text-xs font-bold uppercase rounded-lg">Weight: 20</span>
+                        </div>
+
+                        <div class="indicator-box bg-slate-50 border-l-4 border-navy-500 rounded-r-xl p-4 mb-6">
+                            <span class="text-xs font-bold uppercase tracking-wider text-navy-900 block mb-3">Presentation Baseline Checkpoints:</span>
+                            <div class="checkbox-grid grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Confident Opening</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Eye Contact</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Visual Layout</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Active Engagement</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Summary Closing</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Structure</h4>
+                                    <p class="text-xs text-slate-400">Clean hook intro, logical progression flow, and crisp wrap-up.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 4</span>
+                                    <input type="number" min="0" max="4" value="0" class="pres-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Visual Presentation</h4>
+                                    <p class="text-xs text-slate-400">Aesthetic visuals, crisp text hierarchies, tidy screen layout.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 4</span>
+                                    <input type="number" min="0" max="4" value="0" class="pres-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Body Language</h4>
+                                    <p class="text-xs text-slate-400">Professional posture, descriptive hand gestures, eye tracking.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 4</span>
+                                    <input type="number" min="0" max="4" value="0" class="pres-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Time Management</h4>
+                                    <p class="text-xs text-slate-400">Fulfilling all sections smoothly within the allocated session limit.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 4</span>
+                                    <input type="number" min="0" max="4" value="0" class="pres-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Storytelling</h4>
+                                    <p class="text-xs text-slate-400">Spinning raw bullet lists into contextually rich, human narratives.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 4</span>
+                                    <input type="number" min="0" max="4" value="0" class="pres-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MATRIX 4: Analytical Ability -->
+                    <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-100 print-page-break">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-5">
+                            <div>
+                                <h3 class="text-base font-bold text-navy-900">4. Analytical Ability</h3>
+                                <p class="text-xs text-slate-400">Critical thinking, problem-solving speed, handling scenarios</p>
+                            </div>
+                            <span class="px-3 py-1 bg-navy-50 text-navy-900 text-xs font-bold uppercase rounded-lg">Weight: 15</span>
+                        </div>
+
+                        <div class="indicator-box bg-slate-50 border-l-4 border-navy-500 rounded-r-xl p-4 mb-6">
+                            <span class="text-xs font-bold uppercase tracking-wider text-navy-900 block mb-3">Analytics Baseline Checkpoints:</span>
+                            <div class="checkbox-grid grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Unexpected Questions Handling</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Scenario Handling</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Rapid Decision-Making</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Logical Reasoning</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Critical Thinking</h4>
+                                    <p class="text-xs text-slate-400">Context analysis without assumptions, checking facts objectively.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 5</span>
+                                    <input type="number" min="0" max="5" value="0" class="anal-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Problem Solving</h4>
+                                    <p class="text-xs text-slate-400">Proposing direct, structured answers to customer roadblocks.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 5</span>
+                                    <input type="number" min="0" max="5" value="0" class="anal-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Presence of Mind</h4>
+                                    <p class="text-xs text-slate-400">Calm demeanor when presented with tough and unexpected prompts.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 5</span>
+                                    <input type="number" min="0" max="5" value="0" class="anal-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MATRIX 5: Professional Behaviour -->
+                    <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-5">
+                            <div>
+                                <h3 class="text-base font-bold text-navy-900">5. Professional Behaviour</h3>
+                                <p class="text-xs text-slate-400">Prep, punctuality, ownership, boundaries, etiquette</p>
+                            </div>
+                            <span class="px-3 py-1 bg-navy-50 text-navy-900 text-xs font-bold uppercase rounded-lg">Weight: 10</span>
+                        </div>
+
+                        <div class="indicator-box bg-slate-50 border-l-4 border-navy-500 rounded-r-xl p-4 mb-6">
+                            <span class="text-xs font-bold uppercase tracking-wider text-navy-900 block mb-3">Behavioral Baseline Checkpoints:</span>
+                            <div class="checkbox-grid grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Attire / Dress Code</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Positive Attitude</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Respectful Communication</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Proactive Initiative</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Accountability</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Preparation</h4>
+                                    <p class="text-xs text-slate-400">All screens, files, links pre-arranged prior to evaluation call start.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 2</span>
+                                    <input type="number" min="0" max="2" value="0" class="prof-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Punctuality</h4>
+                                    <p class="text-xs text-slate-400">Starting and ending exactly on the scheduled timelines.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 2</span>
+                                    <input type="number" min="0" max="2" value="0" class="prof-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Ownership</h4>
+                                    <p class="text-xs text-slate-400">Proactively steering the demo towards closure with high integrity.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 2</span>
+                                    <input type="number" min="0" max="2" value="0" class="prof-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Learning Attitude</h4>
+                                    <p class="text-xs text-slate-400">Receptiveness, listening to corrections without defensiveness.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 2</span>
+                                    <input type="number" min="0" max="2" value="0" class="prof-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Professionalism</h4>
+                                    <p class="text-xs text-slate-400">Formal boundary setting, zero slang, executive posture.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 2</span>
+                                    <input type="number" min="0" max="2" value="0" class="prof-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MATRIX 6: Innovation & Initiative -->
+                    <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-5">
+                            <div>
+                                <h3 class="text-base font-bold text-navy-900">6. Innovation & Initiative</h3>
+                                <p class="text-xs text-slate-400">Out-of-scope study, case citations, smart tool integrations</p>
+                            </div>
+                            <span class="px-3 py-1 bg-navy-50 text-navy-900 text-xs font-bold uppercase rounded-lg">Weight: 10</span>
+                        </div>
+
+                        <div class="indicator-box bg-slate-50 border-l-4 border-navy-500 rounded-r-xl p-4 mb-6">
+                            <span class="text-xs font-bold uppercase tracking-wider text-navy-900 block mb-3">Innovation Baseline Checkpoints:</span>
+                            <div class="checkbox-grid grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Out-of-Scope Research</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Industry Case Studies</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>AI Tools Usage</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Interactive Elements</span>
+                                </label>
+                                <label class="checkbox-item flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                    <input type="checkbox" class="rounded text-navy-900 border-slate-300 focus:ring-navy-500 h-4 w-4">
+                                    <span>Visual Storytelling</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Extra Research</h4>
+                                    <p class="text-xs text-slate-400">Referencing industry facts outside basic training deck.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 3</span>
+                                    <input type="number" min="0" max="3" value="0" class="inno-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Creativity</h4>
+                                    <p class="text-xs text-slate-400">Imaginative setups or analogies to keep audience interest high.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 2</span>
+                                    <input type="number" min="0" max="2" value="0" class="inno-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Real-life Examples</h4>
+                                    <p class="text-xs text-slate-400">Active casing: tying explanations to solid industry benchmarks.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 2</span>
+                                    <input type="number" min="0" max="2" value="0" class="inno-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                            <div class="score-row flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50/50 p-4 rounded-xl border border-slate-100 gap-3">
+                                <div class="max-w-md">
+                                    <h4 class="text-sm font-semibold text-slate-800">Use of Technology</h4>
+                                    <p class="text-xs text-slate-400">Live API dashboard, screen integrations or digital assets.</p>
+                                </div>
+                                <div class="flex items-center space-x-3 self-end sm:self-center">
+                                    <span class="text-xs text-slate-400">Max: 3</span>
+                                    <input type="number" min="0" max="3" value="0" class="inno-score w-16 bg-white border border-slate-200 text-center font-bold py-1.5 rounded-lg focus:ring-2 focus:ring-navy-500 outline-none text-navy-900 text-sm" oninput="clampAndCalculate(this)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 4: Executive Authentication & Sign-Off -->
+                <section class="glass-card rounded-2xl p-6 lg:p-8 shadow-sm space-y-6">
+                    <div class="flex items-center space-x-3 border-b border-slate-100 pb-4 mb-4">
+                        <div class="h-8 w-2 bg-navy-500 rounded-full"></div>
+                        <h2 class="text-xl font-bold font-title text-navy-900">4. Executive Evaluation Commentary</h2>
+                    </div>
+
+                    <!-- Strategic AI Button & Status Banner -->
+                    <div class="no-print space-y-3">
+                        <button type="button" id="aiBtn" onclick="generateStrategicAIFeedback()" class="w-full bg-navy-900 hover:bg-navy-500 text-white font-bold py-3.5 px-6 rounded-xl transition shadow-lg shadow-navy-900/10 flex items-center justify-center space-x-2 border-b-4 border-navy-800 hover:border-navy-600 active:translate-y-0.5 active:border-b-0 duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gold-500 animate-pulse" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+                            </svg>
+                            <span>GENERATE STRATEGIC AI FEEDBACK</span>
+                        </button>
+                        <div id="aiWarningBanner" class="hidden bg-amber-50 border border-amber-200 text-amber-800 rounded-lg p-3 text-xs flex items-center space-x-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-500 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            <span>No API key loaded. The portal will generate smart rule-based evaluations locally. Click <strong>Gemini API Key</strong> in the header to unlock fully dynamic Gemini AI feedback.</span>
+                        </div>
+                    </div>
+
+                    <!-- AI Loader Skeleton -->
+                    <div id="aiSkeleton" class="hidden space-y-4 py-2 no-print">
+                        <div class="animate-pulse flex space-x-4">
+                            <div class="flex-1 space-y-4 py-1">
+                                <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                                <div class="space-y-2">
+                                    <div class="h-4 bg-slate-200 rounded"></div>
+                                    <div class="h-4 bg-slate-200 rounded w-5/6"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Strengths Box -->
+                    <div class="form-group">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-navy-900 mb-2">1. Candidate Strengths</label>
+                        <textarea id="strengthsOutput" oninput="syncPrintText('strengthsOutput', 'strengthsPrint')" placeholder="Primary strengths, domain advantages, and execution competency highlights..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm leading-relaxed focus:bg-white focus:ring-2 focus:ring-navy-500 focus:border-navy-500 transition outline-none h-32 font-medium"></textarea>
+                        <div id="strengthsPrint" class="print-commentary" style="display:none;"></div>
+                    </div>
+
+                    <!-- Weaknesses Box -->
+                    <div class="form-group">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-navy-900 mb-2">2. Candidate Weaknesses</label>
+                        <textarea id="weaknessesOutput" oninput="syncPrintText('weaknessesOutput', 'weaknessesPrint')" placeholder="Primary growth areas and identified assessment gaps..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm leading-relaxed focus:bg-white focus:ring-2 focus:ring-navy-500 focus:border-navy-500 transition outline-none h-32 font-medium"></textarea>
+                        <div id="weaknessesPrint" class="print-commentary" style="display:none;"></div>
+                    </div>
+
+                    <!-- Action Required Box -->
+                    <div class="form-group">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-navy-900 mb-2">3. Strategic Action Required</label>
+                        <textarea id="actionOutput" oninput="syncPrintText('actionOutput', 'actionPrint')" placeholder="Prescribed calibration goals, coaching plan, and retraining track..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm leading-relaxed focus:bg-white focus:ring-2 focus:ring-navy-500 focus:border-navy-500 transition outline-none h-32 font-medium"></textarea>
+                        <div id="actionPrint" class="print-commentary" style="display:none;"></div>
+                    </div>
+
+                    <!-- Signature Row -->
+                    <div class="signature-row pt-8 border-t border-slate-100 mt-8">
+                        <table class="w-full border-none border-collapse">
+                            <tr class="border-none">
+                                <td class="border-none w-[45%] text-center align-top">
+                                    <div class="h-10 border-b border-slate-300 w-full mb-2"></div>
+                                    <span class="text-xs font-bold text-navy-900 uppercase tracking-wider">Evaluator Signature</span>
+                                </td>
+                                <td class="border-none w-[10%]"></td>
+                                <td class="border-none w-[45%] text-center align-top">
+                                    <div id="printDate" class="h-10 border-b border-slate-300 w-full mb-2 flex items-end justify-center pb-1 text-sm font-semibold text-slate-700"></div>
+                                    <span class="text-xs font-bold text-navy-900 uppercase tracking-wider">Assessment Date</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </section>
+            </main>
+
+            <!-- RIGHT COLUMN: Floating Action Controls (Col span 4 - Hidden on Print) -->
+            <aside class="lg:col-span-4 mt-8 lg:mt-0 no-print">
+                <div class="floating-sidebar space-y-6">
+                    
+                    <!-- Scoring Summary Panel -->
+                    <div class="bg-navy-900 text-white rounded-2xl p-6 shadow-lg border-b-4 border-gold-500 relative overflow-hidden">
+                        <!-- Subtle abstract layout decoration -->
+                        <div class="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-navy-500 opacity-20 pointer-events-none"></div>
+                        <div class="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-navy-500 opacity-20 pointer-events-none"></div>
+                        
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-gold-500 font-title mb-4">Assessment Index</h3>
+                        
+                        <div class="text-center py-6 border-b border-slate-700/50">
+                            <span class="text-xs text-slate-300 uppercase tracking-wider font-semibold block mb-1">Total Score</span>
+                            <div class="flex items-baseline justify-center space-x-1">
+                                <span id="sidebarTotal" class="text-5xl font-extrabold font-title tracking-tight text-white">0</span>
+                                <span class="text-lg text-slate-400 font-medium">/ 100</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 pt-5">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-300 font-medium">Rank Tier:</span>
+                                <span id="sidebarTier" class="font-bold text-gold-500">Unsatisfactory</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-300 font-medium">Track Rec:</span>
+                                <span id="sidebarRec" class="font-bold text-white text-right max-w-[180px] break-words">Re-evaluation Required</span>
+                            </div>
+                            <!-- Live Progress Ring/Bar -->
+                            <div class="w-full bg-navy-800 rounded-full h-2.5 mt-2">
+                                <div id="sidebarProgressBar" class="bg-gradient-to-r from-gold-500 to-emerald-500 h-2.5 rounded-full duration-300 w-0"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PDF / Action Card -->
+                    <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-100 space-y-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Execution Centre</h3>
+                        <button type="button" onclick="triggerPrint()" class="w-full bg-navy-900 hover:bg-navy-500 border border-navy-500 text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center space-x-2 text-sm shadow animate-pulse">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="h-5 w-5 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            <span>Download as PDF</span>
+                        </button>
+                        <button type="button" onclick="resetForm()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 px-4 rounded-xl transition text-xs border border-slate-200">
+                            Reset Evaluation Matrix
+                        </button>
+                    </div>
+
+                    <!-- Form Help and Checklist Tracker -->
+                    <div class="glass-card rounded-2xl p-6 shadow-sm border border-slate-100 text-xs text-slate-400 space-y-3">
+                        <div class="flex items-center space-x-2 font-semibold text-slate-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-navy-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Assessor Instructions</span>
+                        </div>
+                        <ul class="list-disc pl-4 space-y-1.5 leading-relaxed">
+                            <li>All competency inputs are immediately verified against their individual category bounds.</li>
+                            <li>Pressing the "Generate Strategic AI Feedback" button calls the configured model dynamically.</li>
+                            <li>The signature block and evaluator metadata are rendered as direct text elements upon print translation.</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </aside>
+            
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL: Secure local API Key setup -->
+    <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-200 no-print">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden transform scale-95 transition-transform duration-200" id="settingsBox">
+            <div class="bg-navy-900 text-white px-6 py-4 flex items-center justify-between border-b-2 border-gold-500">
+                <h3 class="font-bold font-title">Configure API Credentials</h3>
+                <button type="button" onclick="closeSettings()" class="text-slate-400 hover:text-white text-xl font-bold transition">&times;</button>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    Enter your Gemini API key below. The key is stored locally in your browser's private secure storage and never sent anywhere else. <strong>Validity Note:</strong> Your API key runs client-side and will work indefinitely as long as your Google AI Studio credentials remain active and have request quota.
+                </p>
+                <div class="form-group">
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Gemini API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="AIzaSy..." class="w-full border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-navy-500 outline-none text-sm font-mono">
+                </div>
+                <div class="form-group">
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Preferred AI Model</label>
+                    <select id="modelSelect" class="w-full border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-navy-500 outline-none text-sm">
+                        <option value="gemini-2.5-flash">gemini-2.5-flash (Recommended, Fast)</option>
+                        <option value="gemini-1.5-flash">gemini-1.5-flash (Legacy, Lightweight)</option>
+                        <option value="gemini-1.5-pro">gemini-1.5-pro (Analytical, Higher Latency)</option>
+                    </select>
+                </div>
+                <div class="flex justify-between items-center pt-2">
+                    <button type="button" onclick="clearApiKey()" class="text-xs text-red-500 hover:underline font-semibold">Delete Saved Key</button>
+                    <div class="space-x-2">
+                        <button type="button" onclick="closeSettings()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2 rounded-lg transition border border-slate-200">Cancel</button>
+                        <button type="button" onclick="saveSettings()" class="bg-navy-900 hover:bg-navy-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition">Save Credentials</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PORTAL CORE LOGIC SCRIPTS -->
+    <script>
+        // Core states
+        let GEMINI_API_KEY = "";
+        let GEMINI_MODEL = "gemini-2.5-flash";
+
+        // Initialize portal on load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Set current date in profile
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('demoDate').value = today;
+            updatePrintDate(today);
+
+            // Load API keys from localStorage
+            loadApiCredentials();
+
+            // Set up date sync for signature
+            document.getElementById('demoDate').addEventListener('change', (e) => {
+                updatePrintDate(e.target.value);
+            });
+
+            // Perform initial calculations
+            calculateScores();
+        });
+
+        // Sync demo date to printable text block
+        function updatePrintDate(dateStr) {
+            if (!dateStr) {
+                document.getElementById('printDate').innerText = "";
+                return;
+            }
+            const dateObj = new Date(dateStr);
+            const formatted = dateObj.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('printDate').innerText = formatted;
+        }
+
+        // Clamp values to min/max on the fly, then recalculate
+        function clampAndCalculate(element) {
+            let val = parseFloat(element.value);
+            const max = parseFloat(element.getAttribute('max'));
+            const min = parseFloat(element.getAttribute('min')) || 0;
+
+            if (isNaN(val)) val = 0;
+            if (val > max) {
+                val = max;
+                element.value = max;
+            }
+            if (val < min) {
+                val = min;
+                element.value = min;
+            }
+            
+            calculateScores();
+        }
+
+        // Aggregate score metrics
+        function sumClassScores(className) {
+            let total = 0;
+            document.querySelectorAll('.' + className).forEach(input => {
+                total += parseFloat(input.value) || 0;
+            });
+            return total;
+        }
+
+        // Main Calculation Engine
+        function calculateScores() {
+            const tech = sumClassScores('tech-score');
+            const comm = sumClassScores('comm-score');
+            const pres = sumClassScores('pres-score');
+            const anal = sumClassScores('anal-score');
+            const prof = sumClassScores('prof-score');
+            const inno = sumClassScores('inno-score');
+
+            // Sync index displays
+            document.getElementById('dashTech').value = tech + " / 25";
+            document.getElementById('dashComm').value = comm + " / 20";
+            document.getElementById('dashPres').value = pres + " / 20";
+            document.getElementById('dashAnal').value = anal + " / 15";
+            document.getElementById('dashProf').value = prof + " / 10";
+            document.getElementById('dashInno').value = inno + " / 10";
+
+            const grandTotal = tech + comm + pres + anal + prof + inno;
+            document.getElementById('dashGrand').value = grandTotal + " / 100";
+            
+            // Sync floating sidebar indicators
+            document.getElementById('sidebarTotal').innerText = grandTotal;
+            document.getElementById('sidebarProgressBar').style.width = grandTotal + '%';
+
+            // Calculate Classification Tier
+            let tier = "Unsatisfactory";
+            let tierClass = "bg-red-100 text-red-700 border border-red-200";
+            if (grandTotal >= 90) {
+                tier = "Exceptional";
+                tierClass = "bg-emerald-100 text-emerald-700 border border-emerald-300";
+            } else if (grandTotal >= 80) {
+                tier = "Outstanding";
+                tierClass = "bg-blue-100 text-blue-700 border border-blue-300";
+            } else if (grandTotal >= 70) {
+                tier = "Excellent";
+                tierClass = "bg-teal-100 text-teal-700 border border-teal-300";
+            } else if (grandTotal >= 60) {
+                tier = "Good";
+                tierClass = "bg-indigo-100 text-indigo-700 border border-indigo-200";
+            } else if (grandTotal >= 50) {
+                tier = "Average";
+                tierClass = "bg-slate-100 text-slate-600 border border-slate-300";
+            }
+            
+            document.getElementById('dashboardTier').value = tier;
+            document.getElementById('sidebarTier').innerText = tier;
+            
+            const tierBadge = document.getElementById('tierBadge');
+            tierBadge.className = "px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider " + tierClass;
+            tierBadge.innerText = tier;
+
+            // Calculate Action Recommendation
+            const forceReeval = document.getElementById('requireReeval') && document.getElementById('requireReeval').checked;
+            let rec = "Retraining Required";
+            let recClass = "bg-orange-100 text-orange-700 border border-orange-300";
+            if (grandTotal >= 85) {
+                rec = "Ready for Live Counselling";
+                recClass = "bg-emerald-100 text-emerald-700 border border-emerald-300";
+            } else if (grandTotal >= 75) {
+                rec = "Ready with Monitoring";
+                recClass = "bg-blue-100 text-blue-700 border border-blue-300";
+            } else if (grandTotal >= 60) {
+                rec = "Needs Practice";
+                recClass = "bg-amber-100 text-amber-700 border border-amber-300";
+            } else {
+                if (forceReeval) {
+                    rec = "Re-evaluation Required";
+                    recClass = "bg-red-100 text-red-700 border border-red-200";
+                } else {
+                    rec = "Retraining Required";
+                    recClass = "bg-orange-100 text-orange-700 border border-orange-300";
+                }
+            }
+
+            document.getElementById('dashboardRec').value = rec;
+            document.getElementById('sidebarRec').innerText = rec;
+            
+            const recBadge = document.getElementById('recBadge');
+            recBadge.className = "px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider " + recClass;
+            recBadge.innerText = rec === "Ready for Live Counselling" ? "Ready" : (rec === "Needs Practice" ? "Practice" : "Alert");
+        }
+
+        // LOCAL STORAGE AND MODAL CONTROLS
+        function openSettings() {
+            const modal = document.getElementById('settingsModal');
+            const box = document.getElementById('settingsBox');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            box.classList.remove('scale-95');
+            box.classList.add('scale-100');
+            document.getElementById('apiKeyInput').value = GEMINI_API_KEY;
+            document.getElementById('modelSelect').value = GEMINI_MODEL;
+        }
+
+        function closeSettings() {
+            const modal = document.getElementById('settingsModal');
+            const box = document.getElementById('settingsBox');
+            box.classList.remove('scale-100');
+            box.classList.add('scale-95');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function saveSettings() {
+            GEMINI_API_KEY = document.getElementById('apiKeyInput').value.trim();
+            GEMINI_MODEL = document.getElementById('modelSelect').value;
+            
+            localStorage.setItem('GEMINI_API_KEY', GEMINI_API_KEY);
+            localStorage.setItem('GEMINI_MODEL', GEMINI_MODEL);
+            
+            checkBannerState();
+            closeSettings();
+        }
+
+        function clearApiKey() {
+            localStorage.removeItem('GEMINI_API_KEY');
+            GEMINI_API_KEY = "";
+            document.getElementById('apiKeyInput').value = "";
+            checkBannerState();
+            closeSettings();
+        }
+
+        function loadApiCredentials() {
+            GEMINI_API_KEY = localStorage.getItem('GEMINI_API_KEY') || "";
+            GEMINI_MODEL = localStorage.getItem('GEMINI_MODEL') || "gemini-2.5-flash";
+            checkBannerState();
+        }
+
+        function checkBannerState() {
+            const banner = document.getElementById('aiWarningBanner');
+            if (!GEMINI_API_KEY) {
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+        }
+
+        function syncPrintText(textareaId, divId) {
+            const ta = document.getElementById(textareaId);
+            const div = document.getElementById(divId);
+            if (ta && div) {
+                div.innerText = ta.value;
+            }
+        }
+
+        // High-fidelity fallback logo on image load error
+        function showFallbackLogo(img) {
+            const container = img.parentElement;
+            if (container) {
+                container.innerHTML = `
+                    <div class="flex items-center space-x-2 text-navy-950 font-bold text-sm tracking-widest uppercase">
+                        <svg class="h-8 w-8 text-gold-500" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                        <span class="font-title">KANAN</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Robust print controller setting suggested filename to CandidateName_Date
+        function triggerPrint() {
+            try {
+                const oldTitle = document.title;
+                const nameInput = document.getElementById('empName');
+                const dateInput = document.getElementById('demoDate');
+                const nameStr = nameInput && nameInput.value.trim() ? nameInput.value.trim().replace(/[^a-zA-Z0-9]/g, '_') : "Candidate";
+                const dateStr = dateInput && dateInput.value ? dateInput.value : new Date().toISOString().split('T')[0];
+                
+                document.title = `${nameStr}_${dateStr}`;
+                
+                window.print();
+                
+                setTimeout(() => {
+                    document.title = oldTitle;
+                }, 1000);
+            } catch (err) {
+                console.error("Print invocation failed:", err);
+                window.print();
+            }
+        }
+
+        // Before printing: sync all print divs and swap visibility
+        const PRINT_PAIRS = [
+            ['strengthsOutput', 'strengthsPrint'],
+            ['weaknessesOutput', 'weaknessesPrint'],
+            ['actionOutput', 'actionPrint']
+        ];
+
+        function preparePrint() {
+            PRINT_PAIRS.forEach(([taId, divId]) => {
+                const ta = document.getElementById(taId);
+                const div = document.getElementById(divId);
+                if (ta && div) {
+                    div.innerText = ta.value;
+                    ta.style.display = 'none';
+                    div.style.display = 'block';
+                }
+            });
+        }
+
+        function restoreAfterPrint() {
+            PRINT_PAIRS.forEach(([taId, divId]) => {
+                const ta = document.getElementById(taId);
+                const div = document.getElementById(divId);
+                if (ta && div) {
+                    ta.style.display = '';
+                    div.style.display = 'none';
+                }
+            });
+        }
+
+        window.onbeforeprint = preparePrint;
+        window.onafterprint = restoreAfterPrint;
+
+        // RESET FUNCTION
+        function resetForm() {
+            if (confirm("Are you sure you want to reset all score sheets and profile data?")) {
+                document.querySelectorAll('input[type="number"]').forEach(input => input.value = 0);
+                document.querySelectorAll('input[type="checkbox"]').forEach(chk => chk.checked = false);
+                document.getElementById('empName').value = "";
+                document.getElementById('manager').value = "";
+                document.getElementById('dept').value = "";
+                document.getElementById('evaluator').value = "";
+                document.getElementById('topic').value = "";
+                document.getElementById('strengthsOutput').value = "";
+                document.getElementById('weaknessesOutput').value = "";
+                document.getElementById('actionOutput').value = "";
+                document.getElementById('strengthsPrint').innerText = "";
+                document.getElementById('weaknessesPrint').innerText = "";
+                document.getElementById('actionPrint').innerText = "";
+                calculateScores();
+            }
+        }
+
+        // STRATEGIC AI FEEDBACK - Gemini Integration with 3 Sections and Bullet Points
+        async function generateStrategicAIFeedback() {
+            const btn = document.getElementById('aiBtn');
+            const skeleton = document.getElementById('aiSkeleton');
+            const strengthsBox = document.getElementById('strengthsOutput');
+            const weaknessesBox = document.getElementById('weaknessesOutput');
+            const actionBox = document.getElementById('actionOutput');
+
+            // Collect parameters
+            const tech = sumClassScores('tech-score');
+            const comm = sumClassScores('comm-score');
+            const pres = sumClassScores('pres-score');
+            const anal = sumClassScores('anal-score');
+            const prof = sumClassScores('prof-score');
+            const inno = sumClassScores('inno-score');
+            const total = tech + comm + pres + anal + prof + inno;
+            
+            const tier = document.getElementById('dashboardTier').value;
+            const rec = document.getElementById('dashboardRec').value;
+            const empName = document.getElementById('empName').value || "the Candidate";
+
+            // If API key is missing, trigger the smart local evaluation builder
+            if (!GEMINI_API_KEY) {
+                btn.disabled = true;
+                skeleton.classList.remove('hidden');
+                btn.innerText = "Analyzing locally...";
+
+                setTimeout(() => {
+                    const localFeedback = buildLocalStrategicCommentary(empName, total, {tech, comm, pres, anal, prof, inno}, tier, rec);
+                    strengthsBox.value = localFeedback.strengths;
+                    weaknessesBox.value = localFeedback.weaknesses;
+                    actionBox.value = localFeedback.action;
+                    
+                    // Sync print blocks
+                    syncPrintText('strengthsOutput', 'strengthsPrint');
+                    syncPrintText('weaknessesOutput', 'weaknessesPrint');
+                    syncPrintText('actionOutput', 'actionPrint');
+                    
+                    skeleton.classList.add('hidden');
+                    btn.disabled = false;
+                    btn.innerText = "GENERATE STRATEGIC AI FEEDBACK";
+                }, 1000);
+                return;
+            }
+
+            // Prepare API parameters and call Gemini
+            btn.disabled = true;
+            skeleton.classList.remove('hidden');
+            btn.innerText = "Generating Feedback via Gemini...";
+
+            const systemPrompt = `You are a 15+ years experience strategic executive talent assessor. Write a formal talent assessment evaluation based on these metric scores:
+            Candidate Name: ${empName}
+            Technical Competency: ${tech}/25
+            Communication Excellence: ${comm}/20
+            Presentation Impact: ${pres}/20
+            Analytical Ability: ${anal}/15
+            Professional Behaviour: ${prof}/10
+            Innovation & Initiative: ${inno}/10
+            Total Score: ${total}/100
+            Overall Classification Tier: ${tier}
+            Development Track Action: ${rec}
+
+            Provide exactly three fields in your response, each structured as a bulleted list of 5-7 concise, warm, constructive, human-friendly professional points. Ensure some points refer to the employee by name (${empName}) naturally. Prefix each bullet point with "• " and separate them with newlines (\\n). Do not include bold headers or markdown formatting inside the JSON fields.
+            Output your response strictly as a JSON object matching this schema exactly:
+            {
+               "strengths": "• First strength bullet point mentioning ${empName}\\n• Second strength...\\n• Third...\\n• Fourth...\\n• Fifth...",
+               "weaknesses": "• First weakness bullet point mentioning ${empName}\\n• Second...\\n• Third...\\n• Fourth...\\n• Fifth...",
+               "action": "• First action bullet point mentioning ${empName}\\n• Second...\\n• Third...\\n• Fourth...\\n• Fifth..."
+            }`;
+
+            try {
+                // Call Gemini using the official v1beta API endpoint with JSON response schema enforcement
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: systemPrompt }] }],
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                            responseSchema: {
+                                type: "OBJECT",
+                                properties: {
+                                    strengths: { type: "STRING" },
+                                    weaknesses: { type: "STRING" },
+                                    action: { type: "STRING" }
+                                },
+                                required: ["strengths", "weaknesses", "action"]
+                            }
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Gemini API Request failed with status ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Parse out candidate text
+                let resultText = data.candidates[0].content.parts[0].text;
+                
+                // Parse JSON response safely with robust markdown-stripping fallback
+                let parsedJSON;
+                try {
+                    parsedJSON = JSON.parse(resultText.trim());
+                } catch (jsonErr) {
+                    console.warn("Standard JSON parse failed, attempting markdown cleanup...", jsonErr);
+                    let cleanText = resultText.trim();
+                    if (cleanText.includes("{")) {
+                        cleanText = cleanText.substring(cleanText.indexOf("{"), cleanText.lastIndexOf("}") + 1);
+                    }
+                    parsedJSON = JSON.parse(cleanText);
+                }
+                
+                strengthsBox.value = parsedJSON.strengths;
+                weaknessesBox.value = parsedJSON.weaknesses;
+                actionBox.value = parsedJSON.action;
+
+                // Sync print blocks
+                syncPrintText('strengthsOutput', 'strengthsPrint');
+                syncPrintText('weaknessesOutput', 'weaknessesPrint');
+                syncPrintText('actionOutput', 'actionPrint');
+
+            } catch (error) {
+                console.error("AI Generation Error:", error);
+                alert("Gemini Integration Error. Confirm your API Key configurations. Falling back to local rules-based engine.");
+                // Graceful fallback to rule-based generation so page never locks
+                const localFeedback = buildLocalStrategicCommentary(empName, total, {tech, comm, pres, anal, prof, inno}, tier, rec);
+                strengthsBox.value = localFeedback.strengths;
+                weaknessesBox.value = localFeedback.weaknesses;
+                actionBox.value = localFeedback.action;
+                
+                // Sync print blocks
+                syncPrintText('strengthsOutput', 'strengthsPrint');
+                syncPrintText('weaknessesOutput', 'weaknessesPrint');
+                syncPrintText('actionOutput', 'actionPrint');
+            } finally {
+                skeleton.classList.add('hidden');
+                btn.disabled = false;
+                btn.innerText = "GENERATE STRATEGIC AI FEEDBACK";
+            }
+        }
+
+        // ─── SCORE-DRIVEN LOCAL EVALUATION ENGINE ─────────────────────────────────
+        // Each category has 4 honest bands based on % score:
+        //   0–40%  → Critical / needs immediate attention
+        //  41–60%  → Developing / below expectation
+        //  61–80%  → Satisfactory / room to grow
+        //  81–100% → Strong / commendable
+        // ──────────────────────────────────────────────────────────────────────────
+        function buildLocalStrategicCommentary(name, total, scores, tier, rec) {
+
+            const cats = [
+                { key: 'tech',  label: 'Technical Competency',      score: scores.tech,  max: 25 },
+                { key: 'comm',  label: 'Communication Excellence',   score: scores.comm,  max: 20 },
+                { key: 'pres',  label: 'Presentation Impact',        score: scores.pres,  max: 20 },
+                { key: 'anal',  label: 'Analytical Ability',         score: scores.anal,  max: 15 },
+                { key: 'prof',  label: 'Professional Behaviour',     score: scores.prof,  max: 10 },
+                { key: 'inno',  label: 'Innovation & Initiative',    score: scores.inno,  max: 10 }
+            ];
+
+            cats.forEach(c => c.pct = c.score / c.max);
+            const sorted = [...cats].sort((a, b) => b.pct - a.pct);
+
+            // ── Per-category, per-band descriptors ──────────────────────────────
+            const catFeedback = {
+                tech: {
+                    critical:    `${name} scored only ${scores.tech}/${cats[0].max} in Technical Competency, which is a critical concern. Core product/service knowledge gaps were clearly visible and need urgent remediation before client-facing exposure.`,
+                    developing:  `${name}'s Technical Competency score of ${scores.tech}/${cats[0].max} indicates partial understanding. Key procedural steps and product specifics need to be revisited and practised more systematically.`,
+                    good:        `${name} demonstrated a reasonable grasp of Technical Competency, scoring ${scores.tech}/${cats[0].max}. There is still scope to sharpen precision on complex product scenarios and edge-case handling.`,
+                    strong:      `${name} scored ${scores.tech}/${cats[0].max} in Technical Competency — a strong result reflecting clear command over product knowledge, processes, and technical workflows.`
+                },
+                comm: {
+                    critical:    `Communication was a significant weak point — ${name} scored ${scores.comm}/${cats[1].max}. Clarity, fluency, and professional language usage were noticeably lacking throughout the session.`,
+                    developing:  `${name}'s communication score of ${scores.comm}/${cats[1].max} shows effort but falls short of the expected standard. Sentence structuring and active listening cues need deliberate improvement.`,
+                    good:        `${name} communicated reasonably well, scoring ${scores.comm}/${cats[1].max}. Tone and vocabulary were generally appropriate; however, consistency across the full session could be improved.`,
+                    strong:      `${name} demonstrated excellent communication skills, scoring ${scores.comm}/${cats[1].max}. The language was professional, well-paced, and consistently clear throughout the evaluation.`
+                },
+                pres: {
+                    critical:    `Presentation Impact was critically low — ${name} scored ${scores.pres}/${cats[2].max}. Structure, delivery confidence, and use of supporting examples were largely absent.`,
+                    developing:  `${name}'s presentation score of ${scores.pres}/${cats[2].max} reveals a basic delivery that lacks engagement and storytelling depth. Visual aids and real-life examples were underused.`,
+                    good:        `${name} delivered a reasonably structured presentation, scoring ${scores.pres}/${cats[2].max}. The content flow was adequate, though confidence and spontaneity during QA could be further developed.`,
+                    strong:      `${name} scored ${scores.pres}/${cats[2].max} in Presentation Impact — demonstrating strong stage presence, structured delivery, and effective use of examples to support key points.`
+                },
+                anal: {
+                    critical:    `Analytical ability was a major concern — ${name} scored only ${scores.anal}/${cats[3].max}. Responses to scenario-based questions and problem-solving prompts were largely unsatisfactory.`,
+                    developing:  `${name} scored ${scores.anal}/${cats[3].max} in Analytical Ability, suggesting difficulty with structured reasoning under pressure. Logical sequencing and critical thinking need further development.`,
+                    good:        `${name} showed adequate analytical thinking, scoring ${scores.anal}/${cats[3].max}. Responses were generally logical though lacked depth and precision in more complex scenarios.`,
+                    strong:      `${name}'s Analytical Ability score of ${scores.anal}/${cats[3].max} reflects sharp reasoning, strong problem-solving composure, and effective handling of scenario-based questions.`
+                },
+                prof: {
+                    critical:    `Professional Behaviour was unsatisfactory — ${name} scored ${scores.prof}/${cats[4].max}. Punctuality, attire, or overall conduct during the session did not meet the expected professional standards.`,
+                    developing:  `${name} scored ${scores.prof}/${cats[4].max} in Professional Behaviour. While basic courtesy was observed, overall professionalism in presentation and conduct needs meaningful improvement.`,
+                    good:        `${name} maintained a professional demeanour through most of the session, scoring ${scores.prof}/${cats[4].max}. Minor improvements in formal conduct and responsiveness would enhance the overall impression.`,
+                    strong:      `${name} scored a full ${scores.prof}/${cats[4].max} in Professional Behaviour — punctual, appropriately presented, and consistently respectful throughout the entire evaluation.`
+                },
+                inno: {
+                    critical:    `Innovation & Initiative was critically low at ${scores.inno}/${cats[5].max}. ${name} showed minimal use of technology, real-life examples, or any attempt to differentiate or add creative value.`,
+                    developing:  `${name}'s Innovation score of ${scores.inno}/${cats[5].max} shows limited initiative. The session lacked use of live tools, unique examples, or creative engagement with the topic.`,
+                    good:        `${name} demonstrated some initiative, scoring ${scores.inno}/${cats[5].max}. There were moments of creative framing, though use of technology and original examples could have been more consistent.`,
+                    strong:      `${name} scored ${scores.inno}/${cats[5].max} in Innovation & Initiative — showing proactive use of technology, real-world examples, and a notably engaging, creative approach to the topic.`
+                }
+            };
+
+            // ── Helper: pick band based on pct ──────────────────────────────────
+            function getBand(pct) {
+                if (pct <= 0.40) return 'critical';
+                if (pct <= 0.60) return 'developing';
+                if (pct <= 0.80) return 'good';
+                return 'strong';
+            }
+
+            // ── Overall score header line ────────────────────────────────────────
+            let overallLine = '';
+            if (total === 0) {
+                overallLine = `${name} scored 0 out of 100, which indicates that no assessable performance was recorded or the session was incomplete.`;
+            } else if (total <= 40) {
+                overallLine = `${name} received a total score of ${total}/100, which falls in the critical range and requires immediate structured intervention before further client-facing activity.`;
+            } else if (total <= 60) {
+                overallLine = `${name} received a total score of ${total}/100, placing the performance in the developing range. Significant improvement is needed across multiple competencies.`;
+            } else if (total <= 80) {
+                overallLine = `${name} received a total score of ${total}/100, reflecting a generally satisfactory performance with clear areas for focused improvement.`;
+            } else {
+                overallLine = `${name} achieved a strong total score of ${total}/100, demonstrating commendable overall performance across most evaluated competencies.`;
+            }
+
+            // ── Build Strengths: top 2 categories + overall ─────────────────────
+            const top2 = sorted.slice(0, 2);
+            let strengthLines = [`• ${overallLine}`];
+            top2.forEach(c => {
+                const band = getBand(c.pct);
+                // For strengths, show top cats regardless of band
+                if (band === 'strong' || band === 'good') {
+                    strengthLines.push(`• ${catFeedback[c.key][band]}`);
+                } else {
+                    // Even top-scoring cat in a low-scoring session gets honest framing
+                    strengthLines.push(`• Among all areas evaluated, ${name} performed comparatively better in ${c.label} with a score of ${c.score}/${c.max} — though this still requires improvement.`);
+                }
+            });
+            // Add a behaviour note if prof is not in top 2
+            if (!top2.find(c => c.key === 'prof')) {
+                const profBand = getBand(scores.prof / 10);
+                strengthLines.push(`• ${catFeedback.prof[profBand]}`);
+            }
+            // Add overall disposition line
+            if (total <= 40) {
+                strengthLines.push(`• It is worth noting that ${name} was willing to participate in the evaluation process, which forms the basic foundation for future learning.`);
+            } else {
+                strengthLines.push(`• ${name} demonstrated willingness to engage throughout the session, which is a positive indicator for future development with the right coaching support.`);
+            }
+
+            // ── Build Weaknesses: bottom 2-3 categories ──────────────────────────
+            const bottom3 = sorted.slice(-3).reverse();
+            let weaknessLines = [];
+            bottom3.forEach(c => {
+                const band = getBand(c.pct);
+                weaknessLines.push(`• ${catFeedback[c.key][band]}`);
+            });
+            if (total <= 40) {
+                weaknessLines.push(`• Across the board, the overall performance level of ${total}/100 indicates that fundamental competency benchmarks were not met during this evaluation cycle.`);
+                weaknessLines.push(`• ${name} will require structured onboarding support and close supervision before being considered ready for any independent client interaction.`);
+            } else if (total <= 60) {
+                weaknessLines.push(`• The overall score of ${total}/100 places ${name} below the satisfactory threshold, suggesting that key areas of the training curriculum require a second, more thorough review.`);
+            } else {
+                weaknessLines.push(`• While the overall performance of ${total}/100 is acceptable, targeted attention to the weaker categories would meaningfully elevate ${name}'s overall effectiveness.`);
+            }
+
+            // ── Build Action Required ────────────────────────────────────────────
+            let actionLines = [];
+            if (total === 0) {
+                actionLines = [
+                    `• Plan a follow-up formal evaluation session for ${name} — the current record shows no scoreable performance.`,
+                    `• Conduct a one-on-one discussion with ${name} to understand if there were any challenges, preparation gaps, or external factors affecting the session.`,
+                    `• Assign a structured pre-assessment study plan covering all 6 competency areas before the next session.`,
+                    `• Ensure ${name} receives a detailed walkthrough of the evaluation rubric and marking criteria in advance of the next attempt.`,
+                    `• Log this session as an unscored attempt in the HR tracker and monitor progress after structured intervention.`
+                ];
+            } else if (total <= 40) {
+                actionLines = [
+                    `• Place ${name} on an immediate improvement plan targeting the weakest competencies — Technical Competency (${scores.tech}/25) and Communication (${scores.comm}/20) in particular.`,
+                    `• Enrol ${name} in focused refresher modules before any client-facing assignment is considered.`,
+                    `• Assign a senior mentor to conduct weekly check-ins and observe ${name}'s practice sessions over the next 3–4 weeks.`,
+                    `• Simulate 5–7 structured mock sessions with live feedback before the next formal evaluation.`,
+                    `• Set a re-evaluation date conditional on completion of the prescribed training milestones.`
+                ];
+            } else if (total <= 60) {
+                actionLines = [
+                    `• Create a targeted development plan for ${name} focused on improving the bottom-scoring categories (${sorted.slice(-2).map(c => c.label).join(', ')}).`,
+                    `• Schedule 3–4 practice demo sessions with structured evaluator feedback before the next assessment cycle.`,
+                    `• Encourage ${name} to study top-performer patterns and shadow senior team members for at least 2 operational cycles.`,
+                    `• Reassess ${name}'s understanding of core processes through written scenario tests alongside the verbal assessment.`,
+                    `• Plan a follow-up formal review and track weekly progress against defined milestones.`
+                ];
+            } else if (total <= 80) {
+                actionLines = [
+                    `• Focus ${name}'s next development phase on closing the gap in ${sorted[sorted.length - 1].label} (${sorted[sorted.length - 1].score}/${sorted[sorted.length - 1].max}) — the weakest category this session.`,
+                    `• Encourage ${name} to incorporate real-life case studies and live digital tools more actively in future presentations.`,
+                    `• Set a self-improvement target for ${name} to move from a score of ${total} to 80+ in the next evaluation cycle.`,
+                    `• Conduct a peer review session where ${name} presents to a panel of 2–3 evaluators for broader feedback.`,
+                    `• Schedule a re-evaluation once the targeted practice sessions are completed.`
+                ];
+            } else {
+                actionLines = [
+                    `• ${name} is performing well — the next priority is maintaining and refining the ${sorted[sorted.length - 1].label} score (${sorted[sorted.length - 1].score}/${sorted[sorted.length - 1].max}), which was the lowest this session.`,
+                    `• Consider positioning ${name} for a more advanced or senior-level demonstration to further challenge and develop their capabilities.`,
+                    `• Document this evaluation as a high-performance benchmark and share learnings with the broader training cohort.`,
+                    `• Recommend ${name} as a peer mentor or buddy for team members currently in the developing range.`,
+                    `• Continue quarterly evaluations to track and maintain the performance standard demonstrated in this session.`
+                ];
+            }
+
+            return {
+                strengths:  strengthLines.join('\n'),
+                weaknesses: weaknessLines.join('\n'),
+                action:     actionLines.join('\n')
+            };
+        }
+    </script>
+</body>
+</html>
