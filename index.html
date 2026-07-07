@@ -90,6 +90,11 @@
             letter-spacing: 0.5rem;
         }
 
+        /* Print-only / Screen-only helper utilities */
+        .print-only {
+            display: none !important;
+        }
+
         /* PRINT STYLES - Professional Letterhead PDF */
         @media print {
             /* A4 page — comfortable margins so nothing clips */
@@ -117,6 +122,21 @@
             .settings-trigger,
             .score-adjust-btn,
             .top-nav {
+                display: none !important;
+            }
+
+            .print-only {
+                display: inline-block !important;
+            }
+            .print-only-checkbox {
+                display: inline-block !important;
+                font-family: Arial, sans-serif !important;
+                font-size: 11pt !important;
+                line-height: 1 !important;
+                vertical-align: middle !important;
+                margin-right: 5px !important;
+            }
+            .no-print {
                 display: none !important;
             }
 
@@ -1435,27 +1455,87 @@
             ['actionOutput', 'actionPrint']
         ];
 
+        let tempPrintElements = [];
+
         function preparePrint() {
-            PRINT_PAIRS.forEach(([taId, divId]) => {
-                const ta = document.getElementById(taId);
-                const div = document.getElementById(divId);
-                if (ta && div) {
-                    div.innerText = ta.value;
-                    ta.style.display = 'none';
-                    div.style.display = 'block';
-                }
-            });
+            try {
+                // Sync textareas
+                PRINT_PAIRS.forEach(([taId, divId]) => {
+                    const ta = document.getElementById(taId);
+                    const div = document.getElementById(divId);
+                    if (ta && div) {
+                        div.innerText = ta.value || "";
+                        ta.style.display = 'none';
+                        div.style.display = 'block';
+                    }
+                });
+
+                // Convert all standard inputs (text, number, date) to static print spans
+                const inputs = document.querySelectorAll('input:not([type="checkbox"]):not([readonly])');
+                inputs.forEach(input => {
+                    const span = document.createElement('span');
+                    span.className = 'print-only font-semibold text-slate-800 border-b border-slate-300 pb-0.5 inline-block w-full text-sm';
+                    span.innerText = input.value || "—";
+                    input.parentNode.insertBefore(span, input.nextSibling);
+                    
+                    input.classList.add('no-print');
+                    tempPrintElements.push({ input, span });
+                });
+
+                // Convert checkboxes to high-contrast symbols (☑ or ☐)
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(chk => {
+                    const span = document.createElement('span');
+                    span.className = 'print-only print-only-checkbox font-bold text-navy-900';
+                    span.innerText = chk.checked ? "☑" : "☐";
+                    chk.parentNode.insertBefore(span, chk);
+                    
+                    chk.classList.add('no-print');
+                    tempPrintElements.push({ input: chk, span });
+                });
+
+                // Convert read-only dashboard inputs (e.g. totals) to plain text
+                const readOnlyInputs = document.querySelectorAll('input[readonly]');
+                readOnlyInputs.forEach(input => {
+                    const span = document.createElement('span');
+                    span.className = 'print-only font-bold text-navy-900 text-sm';
+                    span.innerText = input.value || "";
+                    input.parentNode.insertBefore(span, input.nextSibling);
+                    
+                    input.classList.add('no-print');
+                    tempPrintElements.push({ input, span });
+                });
+
+            } catch (e) {
+                console.error("Error preparing print layout:", e);
+            }
         }
 
         function restoreAfterPrint() {
-            PRINT_PAIRS.forEach(([taId, divId]) => {
-                const ta = document.getElementById(taId);
-                const div = document.getElementById(divId);
-                if (ta && div) {
-                    ta.style.display = '';
-                    div.style.display = 'none';
-                }
-            });
+            try {
+                // Restore textareas
+                PRINT_PAIRS.forEach(([taId, divId]) => {
+                    const ta = document.getElementById(taId);
+                    const div = document.getElementById(divId);
+                    if (ta && div) {
+                        ta.style.display = '';
+                        div.style.display = 'none';
+                    }
+                });
+
+                // Remove temporary print elements
+                tempPrintElements.forEach(({ input, span }) => {
+                    if (span && span.parentNode) {
+                        span.parentNode.removeChild(span);
+                    }
+                    if (input) {
+                        input.classList.remove('no-print');
+                    }
+                });
+                tempPrintElements = [];
+            } catch (e) {
+                console.error("Error restoring after print layout:", e);
+            }
         }
 
         window.onbeforeprint = preparePrint;
