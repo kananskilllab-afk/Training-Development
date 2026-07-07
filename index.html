@@ -1648,6 +1648,7 @@
                         contents: [{ parts: [{ text: systemPrompt }] }],
                         generationConfig: {
                             responseMimeType: "application/json",
+                            temperature: 0.95,
                             responseSchema: {
                                 type: "OBJECT",
                                 properties: {
@@ -1712,6 +1713,12 @@
             }
         }
 
+        // Helper: pick random elements from array
+        function getRandomElements(array, count) {
+            const shuffled = [...array].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+
         // ─── SCORE-DRIVEN LOCAL EVALUATION ENGINE ─────────────────────────────────
         // Each category has 4 honest bands based on % score:
         //   0–40%  → Critical / needs immediate attention
@@ -1732,158 +1739,118 @@
 
             cats.forEach(c => c.pct = c.score / c.max);
             const sorted = [...cats].sort((a, b) => b.pct - a.pct);
+            const topCat = sorted[0];
+            const bottomCat = sorted[sorted.length - 1];
 
-            // ── Per-category, per-band descriptors ──────────────────────────────
-            const catFeedback = {
-                tech: {
-                    critical:    `${name} scored only ${scores.tech}/${cats[0].max} in Technical Competency, which is a critical concern. Core product/service knowledge gaps were clearly visible and need urgent remediation before client-facing exposure.`,
-                    developing:  `${name}'s Technical Competency score of ${scores.tech}/${cats[0].max} indicates partial understanding. Key procedural steps and product specifics need to be revisited and practised more systematically.`,
-                    good:        `${name} demonstrated a reasonable grasp of Technical Competency, scoring ${scores.tech}/${cats[0].max}. There is still scope to sharpen precision on complex product scenarios and edge-case handling.`,
-                    strong:      `${name} scored ${scores.tech}/${cats[0].max} in Technical Competency — a strong result reflecting clear command over product knowledge, processes, and technical workflows.`
-                },
-                comm: {
-                    critical:    `Communication was a significant weak point — ${name} scored ${scores.comm}/${cats[1].max}. Clarity, fluency, and professional language usage were noticeably lacking throughout the session.`,
-                    developing:  `${name}'s communication score of ${scores.comm}/${cats[1].max} shows effort but falls short of the expected standard. Sentence structuring and active listening cues need deliberate improvement.`,
-                    good:        `${name} communicated reasonably well, scoring ${scores.comm}/${cats[1].max}. Tone and vocabulary were generally appropriate; however, consistency across the full session could be improved.`,
-                    strong:      `${name} demonstrated excellent communication skills, scoring ${scores.comm}/${cats[1].max}. The language was professional, well-paced, and consistently clear throughout the evaluation.`
-                },
-                pres: {
-                    critical:    `Presentation Impact was critically low — ${name} scored ${scores.pres}/${cats[2].max}. Structure, delivery confidence, and use of supporting examples were largely absent.`,
-                    developing:  `${name}'s presentation score of ${scores.pres}/${cats[2].max} reveals a basic delivery that lacks engagement and storytelling depth. Visual aids and real-life examples were underused.`,
-                    good:        `${name} delivered a reasonably structured presentation, scoring ${scores.pres}/${cats[2].max}. The content flow was adequate, though confidence and spontaneity during QA could be further developed.`,
-                    strong:      `${name} scored ${scores.pres}/${cats[2].max} in Presentation Impact — demonstrating strong stage presence, structured delivery, and effective use of examples to support key points.`
-                },
-                anal: {
-                    critical:    `Analytical ability was a major concern — ${name} scored only ${scores.anal}/${cats[3].max}. Responses to scenario-based questions and problem-solving prompts were largely unsatisfactory.`,
-                    developing:  `${name} scored ${scores.anal}/${cats[3].max} in Analytical Ability, suggesting difficulty with structured reasoning under pressure. Logical sequencing and critical thinking need further development.`,
-                    good:        `${name} showed adequate analytical thinking, scoring ${scores.anal}/${cats[3].max}. Responses were generally logical though lacked depth and precision in more complex scenarios.`,
-                    strong:      `${name}'s Analytical Ability score of ${scores.anal}/${cats[3].max} reflects sharp reasoning, strong problem-solving composure, and effective handling of scenario-based questions.`
-                },
-                prof: {
-                    critical:    `Professional Behaviour was unsatisfactory — ${name} scored ${scores.prof}/${cats[4].max}. Punctuality, attire, or overall conduct during the session did not meet the expected professional standards.`,
-                    developing:  `${name} scored ${scores.prof}/${cats[4].max} in Professional Behaviour. While basic courtesy was observed, overall professionalism in presentation and conduct needs meaningful improvement.`,
-                    good:        `${name} maintained a professional demeanour through most of the session, scoring ${scores.prof}/${cats[4].max}. Minor improvements in formal conduct and responsiveness would enhance the overall impression.`,
-                    strong:      `${name} scored a full ${scores.prof}/${cats[4].max} in Professional Behaviour — punctual, appropriately presented, and consistently respectful throughout the entire evaluation.`
-                },
-                inno: {
-                    critical:    `Innovation & Initiative was critically low at ${scores.inno}/${cats[5].max}. ${name} showed minimal use of technology, real-life examples, or any attempt to differentiate or add creative value.`,
-                    developing:  `${name}'s Innovation score of ${scores.inno}/${cats[5].max} shows limited initiative. The session lacked use of live tools, unique examples, or creative engagement with the topic.`,
-                    good:        `${name} demonstrated some initiative, scoring ${scores.inno}/${cats[5].max}. There were moments of creative framing, though use of technology and original examples could have been more consistent.`,
-                    strong:      `${name} scored ${scores.inno}/${cats[5].max} in Innovation & Initiative — showing proactive use of technology, real-world examples, and a notably engaging, creative approach to the topic.`
-                }
-            };
+            // Pools of randomized lines reflecting 40+ years of L&D senior experience:
+            let strengthPool = [];
+            let weaknessPool = [];
+            let actionPool = [];
 
-            // ── Helper: pick band based on pct ──────────────────────────────────
-            function getBand(pct) {
-                if (pct <= 0.40) return 'critical';
-                if (pct <= 0.60) return 'developing';
-                if (pct <= 0.80) return 'good';
-                return 'strong';
-            }
-
-            // ── Overall score header line ────────────────────────────────────────
-            let overallLine = '';
             if (total === 0) {
-                overallLine = `${name} scored 0 out of 100, which indicates that no assessable performance was recorded or the session was incomplete.`;
-            } else if (total <= 40) {
-                overallLine = `${name} received a total score of ${total}/100, which falls in the critical range and requires immediate structured intervention before further client-facing activity.`;
-            } else if (total <= 60) {
-                overallLine = `${name} received a total score of ${total}/100, placing the performance in the developing range. Significant improvement is needed across multiple competencies.`;
-            } else if (total <= 80) {
-                overallLine = `${name} received a total score of ${total}/100, reflecting a generally satisfactory performance with clear areas for focused improvement.`;
-            } else {
-                overallLine = `${name} achieved a strong total score of ${total}/100, demonstrating commendable overall performance across most evaluated competencies.`;
-            }
-
-            // ── Build Strengths: top 2 categories + overall ─────────────────────
-            const top2 = sorted.slice(0, 2);
-            let strengthLines = [`• ${overallLine}`];
-            top2.forEach(c => {
-                const band = getBand(c.pct);
-                // For strengths, show top cats regardless of band
-                if (band === 'strong' || band === 'good') {
-                    strengthLines.push(`• ${catFeedback[c.key][band]}`);
-                } else {
-                    // Even top-scoring cat in a low-scoring session gets honest framing
-                    strengthLines.push(`• Among all areas evaluated, ${name} performed comparatively better in ${c.label} with a score of ${c.score}/${c.max} — though this still requires improvement.`);
-                }
-            });
-            // Add a behaviour note if prof is not in top 2
-            if (!top2.find(c => c.key === 'prof')) {
-                const profBand = getBand(scores.prof / 10);
-                strengthLines.push(`• ${catFeedback.prof[profBand]}`);
-            }
-            // Add overall disposition line
-            if (total <= 40) {
-                strengthLines.push(`• It is worth noting that ${name} was willing to participate in the evaluation process, which forms the basic foundation for future learning.`);
-            } else {
-                strengthLines.push(`• ${name} demonstrated willingness to engage throughout the session, which is a positive indicator for future development with the right coaching support.`);
-            }
-
-            // ── Build Weaknesses: bottom 2-3 categories ──────────────────────────
-            const bottom3 = sorted.slice(-3).reverse();
-            let weaknessLines = [];
-            bottom3.forEach(c => {
-                const band = getBand(c.pct);
-                weaknessLines.push(`• ${catFeedback[c.key][band]}`);
-            });
-            if (total <= 40) {
-                weaknessLines.push(`• Across the board, the overall performance level of ${total}/100 indicates that fundamental competency benchmarks were not met during this evaluation cycle.`);
-                weaknessLines.push(`• ${name} will require structured onboarding support and close supervision before being considered ready for any independent client interaction.`);
-            } else if (total <= 60) {
-                weaknessLines.push(`• The overall score of ${total}/100 places ${name} below the satisfactory threshold, suggesting that key areas of the training curriculum require a second, more thorough review.`);
-            } else {
-                weaknessLines.push(`• While the overall performance of ${total}/100 is acceptable, targeted attention to the weaker categories would meaningfully elevate ${name}'s overall effectiveness.`);
-            }
-
-            // ── Build Action Required ────────────────────────────────────────────
-            let actionLines = [];
-            if (total === 0) {
-                actionLines = [
-                    `• Plan a follow-up formal evaluation session for ${name} — the current record shows no scoreable performance.`,
-                    `• Conduct a one-on-one discussion with ${name} to understand if there were any challenges, preparation gaps, or external factors affecting the session.`,
-                    `• Assign a structured pre-assessment study plan covering all 6 competency areas before the next session.`,
-                    `• Ensure ${name} receives a detailed walkthrough of the evaluation rubric and marking criteria in advance of the next attempt.`,
-                    `• Log this session as an unscored attempt in the HR tracker and monitor progress after structured intervention.`
+                // If score is 0, provide a strictly realistic, non-sugarcoated assessment of a non-performance
+                strengthPool = [
+                    `• No active performance or scoreable metrics were recorded for ${name} during this evaluation cycle.`,
+                    `• The assessment sheet reflects a complete lack of demonstrated skills across all key performance areas.`,
+                    `• While ${name} logged into the portal, no practical demo or conceptual answers were submitted.`,
+                    `• This record serves as a baseline blank evaluation and does not reflect any functional capabilities.`,
+                    `• ${name}'s profile remains open for a future baseline assessment session.`
+                ];
+                weaknessPool = [
+                    `• The absence of scores makes it impossible to verify any baseline technical competency for ${name}.`,
+                    `• No communication, presentation, or problem-solving parameters could be evaluated.`,
+                    `• The assessment reflects a critical gap in candidate participation or system submission.`,
+                    `• Fundamental indicators for department readiness are completely undocumented in this run.`,
+                    `• Unable to identify specific technical advantages or developmental areas due to zero scoring.`
+                ];
+                actionPool = [
+                    `• Schedule a detailed discussion with ${name} to clarify evaluation parameters and expectations.`,
+                    `• Ensure the marking criteria and rubrics are thoroughly shared with ${name} prior to re-evaluating.`,
+                    `• Identify if there were any technical system issues or external factors that prevented score entry.`,
+                    `• Assign a foundational study guide covering product knowledge and active dialogue flow.`,
+                    `• Establish a firm date for a fresh evaluation run once preparation checkpoints are confirmed.`
                 ];
             } else if (total <= 40) {
-                actionLines = [
-                    `• Place ${name} on an immediate improvement plan targeting the weakest competencies — Technical Competency (${scores.tech}/25) and Communication (${scores.comm}/20) in particular.`,
-                    `• Enrol ${name} in focused refresher modules before any client-facing assignment is considered.`,
-                    `• Assign a senior mentor to conduct weekly check-ins and observe ${name}'s practice sessions over the next 3–4 weeks.`,
-                    `• Simulate 5–7 structured mock sessions with live feedback before the next formal evaluation.`,
-                    `• Set a re-evaluation date conditional on completion of the prescribed training milestones.`
+                // Critical tone: Direct, polite but firm, no buttering
+                strengthPool = [
+                    `• The evaluation records a starting baseline score of ${total}/100, which reflects initial participation.`,
+                    `• Comparatively, ${name} showed slightly better relative focus in ${topCat.label} with a score of ${topCat.score}/${topCat.max}.`,
+                    `• ${name} followed basic evaluator directions during the structured parts of the session.`,
+                    `• The candidate stayed present throughout the session, showing intent to understand the evaluation process.`,
+                    `• Initial familiarity with some basic terms in the ${topCat.label} section was observed.`
                 ];
-            } else if (total <= 60) {
-                actionLines = [
-                    `• Create a targeted development plan for ${name} focused on improving the bottom-scoring categories (${sorted.slice(-2).map(c => c.label).join(', ')}).`,
-                    `• Schedule 3–4 practice demo sessions with structured evaluator feedback before the next assessment cycle.`,
-                    `• Encourage ${name} to study top-performer patterns and shadow senior team members for at least 2 operational cycles.`,
-                    `• Reassess ${name}'s understanding of core processes through written scenario tests alongside the verbal assessment.`,
-                    `• Plan a follow-up formal review and track weekly progress against defined milestones.`
+                weaknessPool = [
+                    `• A critical score of ${scores.tech}/25 in Technical Competency indicates major product knowledge gaps for ${name}.`,
+                    `• ${name} struggled with active listening and clear phrasing, scoring ${scores.comm}/20 in Communication Excellence.`,
+                    `• The Presentation Impact score of ${scores.pres}/20 shows a lack of structure and delivery confidence.`,
+                    `• Under scenario questions, ${name} showed difficulty handling unexpected customer inquiries (${scores.anal}/15 in Analytics).`,
+                    `• Professional conduct and pacing did not meet the department's baseline expectation standards.`,
+                    `• The total score of ${total}/100 shows that fundamental competency benchmarks have not been met.`
                 ];
-            } else if (total <= 80) {
-                actionLines = [
-                    `• Focus ${name}'s next development phase on closing the gap in ${sorted[sorted.length - 1].label} (${sorted[sorted.length - 1].score}/${sorted[sorted.length - 1].max}) — the weakest category this session.`,
-                    `• Encourage ${name} to incorporate real-life case studies and live digital tools more actively in future presentations.`,
-                    `• Set a self-improvement target for ${name} to move from a score of ${total} to 80+ in the next evaluation cycle.`,
-                    `• Conduct a peer review session where ${name} presents to a panel of 2–3 evaluators for broader feedback.`,
-                    `• Schedule a re-evaluation once the targeted practice sessions are completed.`
+                actionPool = [
+                    `• Place ${name} on an immediate, mandatory retraining track focusing on product features.`,
+                    `• Assign a dedicated L&D mentor to monitor ${name}'s progress over the next coaching cycle.`,
+                    `• Conduct 3-4 structured mock runs focusing on confidence, pacing, and handling direct questions.`,
+                    `• Refrain from assigning any independent client interactions to ${name} until milestones are achieved.`,
+                    `• Plan a comprehensive re-evaluation once core competency checkpoints are cleared.`
+                ];
+            } else if (total <= 70) {
+                // Mid range: Balanced, constructive feedback
+                strengthPool = [
+                    `• ${name} achieved a total score of ${total}/100, showing satisfactory potential in key areas.`,
+                    `• Demonstrated steady capability in ${topCat.label}, scoring ${topCat.score}/${topCat.max}.`,
+                    `• The communication flow from ${name} was polite and generally structured during the demo.`,
+                    `• Showed good compliance with standard operational procedures and guidelines.`,
+                    `• Exhibited a clear willingness to learn and accept real-time assessor feedback.`
+                ];
+                weaknessPool = [
+                    `• ${name} needs to improve execution in ${bottomCat.label}, where they scored ${bottomCat.score}/${bottomCat.max}.`,
+                    `• Pacing and handling of unexpected questions showed room for refinement.`,
+                    `• Punctuality and professional presentation details need closer attention.`,
+                    `• Real-life examples were underutilized, limiting the engagement value of the demo.`,
+                    `• The score of ${total}/100 suggests that while baseline skills exist, consistency is lacking.`
+                ];
+                actionPool = [
+                    `• Assign targeted practice modules for ${name} focusing on ${bottomCat.label}.`,
+                    `• Conduct weekly practice sessions with direct feedback from senior team members.`,
+                    `• Encourage ${name} to shadow senior colleagues during live counselling calls.`,
+                    `• Test ${name}'s process accuracy using written scenario questionnaires.`,
+                    `• Plan a follow-up review after the targeted practice modules are completed.`
                 ];
             } else {
-                actionLines = [
-                    `• ${name} is performing well — the next priority is maintaining and refining the ${sorted[sorted.length - 1].label} score (${sorted[sorted.length - 1].score}/${sorted[sorted.length - 1].max}), which was the lowest this session.`,
-                    `• Consider positioning ${name} for a more advanced or senior-level demonstration to further challenge and develop their capabilities.`,
-                    `• Document this evaluation as a high-performance benchmark and share learnings with the broader training cohort.`,
-                    `• Recommend ${name} as a peer mentor or buddy for team members currently in the developing range.`,
-                    `• Continue quarterly evaluations to track and maintain the performance standard demonstrated in this session.`
+                // High scores: Encouraging, praise
+                strengthPool = [
+                    `• ${name} achieved an excellent score of ${total}/100, showing clear mastery of the subject.`,
+                    `• Demonstrated outstanding command in ${topCat.label}, scoring ${topCat.score}/${topCat.max}.`,
+                    `• The delivery from ${name} was highly confident, engaging, and professional throughout.`,
+                    `• Exhibited excellent conceptual clarity and fluid explanation of complex workflows.`,
+                    `• Use of digital tools and real-life examples added significant value to the assessment.`
+                ];
+                weaknessPool = [
+                    `• Minor room for calibration remains in ${bottomCat.label}, where ${name} scored ${bottomCat.score}/${bottomCat.max}.`,
+                    `• A slight adjustment in voice pacing during stressful QA segments would be beneficial.`,
+                    `• Ensure consistent depth is maintained even during simpler product explanations.`,
+                    `• Minor formatting and visual alignment checks will refine the overall presentation.`,
+                    `• The high score of ${total}/100 is commendable, with only minor polishing needed.`
+                ];
+                actionPool = [
+                    `• Recommend ${name} to act as a peer mentor for developing team members.`,
+                    `• Consider fast-tracking ${name} for advanced client-facing or senior roles.`,
+                    `• Document this session as a benchmark evaluation for the department.`,
+                    `• Set up quarterly reviews to ensure the high standard of performance is maintained.`,
+                    `• Suggest ${name} explores advanced training modules to expand their domain expertise.`
                 ];
             }
+
+            // Shuffle and pick 5 elements randomly for each section
+            const strengthsText = getRandomElements(strengthPool, 5).join('\n');
+            const weaknessesText = getRandomElements(weaknessPool, 5).join('\n');
+            const actionText = getRandomElements(actionPool, 5).join('\n');
 
             return {
-                strengths:  strengthLines.join('\n'),
-                weaknesses: weaknessLines.join('\n'),
-                action:     actionLines.join('\n')
+                strengths:  strengthsText,
+                weaknesses: weaknessesText,
+                action:     actionText
             };
         }
     </script>
